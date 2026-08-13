@@ -75,5 +75,5 @@ This document defines requirements for two screens built on the shared boilerpla
 ## 6. Sign-off
 
 - [x] Reviewed by PM
-- [ ] Reviewed by UX
+- [x] Reviewed by UX
 - [ ] Shared in team channel / linked on Planner card
