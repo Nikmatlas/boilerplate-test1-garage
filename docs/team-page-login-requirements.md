@@ -2,7 +2,7 @@
 
 **Card:** [BOOTSTRAP RESTYLING] – Write requirements for team page + login styling
 **Author (BA):** Nicholas
-**Status:** Draft — pending review from PM and UX
+**Status:** Ready to develop
 **Repo:** boilerplate-test1-garage
 
 ---
@@ -76,4 +76,4 @@ This document defines requirements for two screens built on the shared boilerpla
 
 - [x] Reviewed by PM
 - [x] Reviewed by UX
-- [ ] Shared in team channel / linked on Planner card
+- [x] Shared in team channel / linked on Planner card
