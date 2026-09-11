@@ -1,14 +1,9 @@
 import { onRequest } from 'firebase-functions/v2/https'
 import { createApp } from './app'
+import { onUserCreate } from './triggers/onUserCreate'
 
 const app = createApp()
 
-/**
- * Main API Cloud Function — Express fat-lambda pattern.
- * All routes are handled by the Express app.
- *
- * Deployed URL: https://{region}-{project}.cloudfunctions.net/api
- */
 export const api = onRequest(
   {
     region: 'australia-southeast1',
@@ -18,3 +13,5 @@ export const api = onRequest(
   },
   app
 )
+
+export { onUserCreate }
