@@ -286,11 +286,12 @@ The project is being developed by a team working across different areas of the s
 
 | Role | Responsibility |
 |---|---|
-| **Project Management** | Planning, coordination and project tracking |
-| **Business Analysis** | Requirements, business processes and stakeholder needs |
-| **Development** | Frontend, backend and database implementation |
+| **PM** | Planning, coordination and project tracking |
+| **BA** | Requirements, business processes and stakeholder needs |
+| **Dev1** | Frontend and coding design |
+| **Dev2** | Backend and database implementation |
 | **UX/UI** | User experience, interface design and usability |
-| **Testing** | Test planning, execution and defect reporting |
+| **BA** | Test planning, execution and defect reporting |
 
 See the project's requirements and documentation for the current team members and responsibilities.
 
@@ -327,11 +328,11 @@ Features and functionality will be added progressively according to the project'
 
 ## Team
 
-**Food Systems Collective CRM Team**
+**45-Client and PRM — Team A**
 
 This repository contains the team's implementation of the Client & Partner Relationship Management System for the Food Systems Collective.
 
 ---
 
 **Project:** Food Systems Collective — Client & Partner Relationship Management System
-**Repository:** FSC CRM
+**Repository:** fsc-client-relationship-management
