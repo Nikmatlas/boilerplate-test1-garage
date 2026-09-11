@@ -1,208 +1,337 @@
-# Garage Boilerplate
+# Food Systems Collective — Client & Partner Relationship Management System
 
-> Streamlined Next.js + Firebase monorepo for student capstone projects — batteries included, beginner friendly, free-tier only.
+> A web-based Client & Partner Relationship Management (CRM) system developed for the Food Systems Collective (FSC).
 
-**New here? Read the [step-by-step guide](docs/GUIDE.md)** — it walks you from clone to shipping your first feature. The system diagrams are in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+The system is designed to help FSC manage its relationships with clients and partners in one centralised platform. It provides a structured way to manage contacts, organisations, communications, proposals, activities, and relationship information.
 
-**Note for the PR** if you cannot merge your pr is because there is a high veulnerability and the system doesn't allow for pr with high vulnerabilities to be merged. Instructions are below to fix this.
+## Project Overview
 
-## Stack
+The FSC CRM is being developed as a team project to support the Client & Partner Relationship Management needs of the Food Systems Collective.
+
+The system aims to:
+
+- Centralise client and partner information
+- Make relationship information easier to access and manage
+- Track interactions and communications
+- Support client and partner relationship management
+- Improve visibility of ongoing activities and proposals
+- Reduce reliance on disconnected spreadsheets and manual processes
+- Provide a foundation for future CRM functionality
+
+## Tech Stack
 
 | | |
 |-|-|
-| **Frontend** | Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind v4 |
-| **Backend** | Firebase Cloud Functions v2 · Express (single "fat lambda") |
-| **Database / Auth** | Firestore · Firebase Authentication (free Spark plan) |
-| **Package manager** | pnpm workspaces — always `pnpm`, never `npm`/`yarn` |
-| **Testing** | Vitest · Testing Library · supertest |
-| **Quality gates** | Lefthook (Conventional Commits, lint, format) · GitHub Actions CI |
+| **Frontend** | Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS |
+| **Backend** | Firebase Cloud Functions v2 · Express |
+| **Database** | Firebase Firestore |
+| **Authentication** | Firebase Authentication |
+| **Package Manager** | pnpm workspaces |
+| **Testing** | Vitest · Testing Library · Supertest |
+| **Code Quality** | ESLint · Prettier · Lefthook |
+| **CI/CD** | GitHub Actions |
+| **Deployment** | Vercel |
 
-There's no local emulator and no Docker — the app always talks to a real (free) Firebase project. Firebase Cloud Storage isn't used either, since real usage requires the paid Blaze plan; store file metadata in Firestore or use a free third-party host if a feature needs uploads.
+## Project Structure
 
-## Quick Start
-
-### 0. Prerequisites
-
-- **Node.js 22** — [nodejs.org](https://nodejs.org)
-- **pnpm** — `npm install -g pnpm`
-- No Firebase CLI install needed — `npx firebase-tools` runs it on demand for rule deploys
-
-### 1. Bootstrap
-
-```bash
-git clone https://github.com/your-org/garage-boilerplate my-project
-cd my-project
-pnpm run bootstrap
+```text
+/
+├── frontend/
+│   └── src/
+│       ├── app/             # Application pages and routes
+│       ├── components/      # Reusable UI components
+│       ├── features/        # Feature-specific modules
+│       ├── lib/             # Firebase, utilities and shared logic
+│       ├── hooks/           # Custom React hooks
+│       ├── providers/       # React context providers
+│       ├── actions/         # Next.js Server Actions
+│       └── types/           # TypeScript type definitions
+│
+├── backend/
+│   └── src/
+│       ├── app.ts           # Express application
+│       ├── routes/           # API routes
+│       ├── middleware/       # Authentication and error handling
+│       └── lib/              # Firebase and backend utilities
+│
+├── firebase/
+│   ├── firestore.rules       # Firestore security rules
+│   └── firestore.indexes.json
+│
+├── docs/                     # Project documentation
+│
+└── .github/                  # GitHub Actions and repository configuration
 ```
 
-> **Easiest path:** open the project in Claude Code and run **`/bootstrap`** — it does everything below, walks you through creating a free Firebase project, handles the common failure modes, and finishes with a verified auth smoke test.
+## Getting Started
 
-Bootstrap installs dependencies, creates the root `.env` from `.env.example` (only if missing), and generates the per-package env files.
+### Prerequisites
 
-### 2. Connect Firebase — one env file
+Make sure you have the following installed:
 
-**All env values live in the root `.env`.** `frontend/.env.local` and `backend/.env` are generated from it by `pnpm run env:sync` (runs automatically before `pnpm run dev`) — never edit them by hand.
+- **Node.js 22**
+- **pnpm 10+**
+- Access to the project's Firebase environment
 
-Create a project at [console.firebase.google.com](https://console.firebase.google.com) — the free Spark plan is enough, no billing required — then:
+Check your versions:
 
-1. Enable **Authentication** (Email/Password + Google) and create a **Firestore** database
-2. Register a **web app** (Project settings → Your apps → Web) and copy each `firebaseConfig` value into the matching `NEXT_PUBLIC_FIREBASE_*` variable in `.env`
-3. Generate a **service account key** (Project settings → Service accounts), base64-encode it, and set `FIREBASE_SERVICE_ACCOUNT_KEY_BASE64` in `.env`:
-   ```bash
-   # macOS (BSD base64 — no -w flag)
-   base64 -i service-account.json | tr -d '\n'
-   # Linux (GNU base64)
-   base64 -w 0 service-account.json
-   # Windows PowerShell (single quotes around the path)
-   [Convert]::ToBase64String([IO.File]::ReadAllBytes('C:\path\to\service-account.json'))
-   ```
-4. Set `NEXT_PUBLIC_FIREBASE_PROJECT_ID` in `.env` and the same id in `.firebaserc` (`projects.default`)
+```bash
+node --version
+pnpm --version
+```
 
-Full variable reference: [docs/ENV-VARS.md](docs/ENV-VARS.md).
+### Installation
 
-### 3. Run
+Clone the repository:
+
+```bash
+git clone <repository-url>
+cd fsc-crm
+```
+
+Install dependencies:
+
+```bash
+pnpm install
+```
+
+### Environment Setup
+
+The application uses Firebase for authentication, database functionality and backend services.
+
+Environment variables should be configured according to the project's environment configuration.
+
+Do **not** commit:
+
+- `.env`
+- `.env.local`
+- Firebase service account credentials
+- API keys
+- Private keys
+- Other secrets
+
+For the required environment variables, refer to:
+
+```text
+docs/ENV-VARS.md
+```
+
+### Run the Development Server
+
+From the repository root:
 
 ```bash
 pnpm run dev
 ```
 
-- App → [http://localhost:3000](http://localhost:3000)
+The frontend will be available at:
 
-Restart the dev server after changing `.env` — `NEXT_PUBLIC_*` variables are baked in at startup.
-
-## Troubleshooting
-
-| Symptom | What to try |
-|--------|-------------|
-| `auth/invalid-api-key` | Fill every `NEXT_PUBLIC_FIREBASE_*` value in the root `.env`, run `pnpm run env:sync`, then restart the dev server. |
-| "Firebase web config is incomplete" on Vercel | A `NEXT_PUBLIC_FIREBASE_*` env var is missing in Vercel. Add it under Project Settings → Environment Variables (same names as your local `.env`), then redeploy — existing deployments don't pick up new env vars automatically. See [docs/CI-CD.md § Vercel Setup](docs/CI-CD.md#vercel-setup-frontend). |
-| `Invalid project id: REPLACE_WITH_...` | Set the real project id in `.firebaserc`. |
-| `'next' is not recognized` / `Command "next" not found` | Run `pnpm install` from the **repo root**. If it persists, delete all `node_modules` folders and reinstall. |
-| Ignored build scripts warning from pnpm | Build approvals live in `pnpm-workspace.yaml` (`allowBuilds`) — re-run `pnpm install`. |
-| "Missing or insufficient permissions" | Firestore security rules don't allow that access — add rules in `firebase/firestore.rules`, then deploy them (`npx firebase-tools deploy --only firestore:rules`). |
-| Commit rejected | Message must be Conventional Commits (`feat: …`, `fix: …`). |
-
-More beginner-oriented pitfalls: [docs/GUIDE.md § Common pitfalls](docs/GUIDE.md#6-common-pitfalls).
-
-## Project Structure
-
-```
-/
-├── frontend/          Next.js 16 App Router
-│   └── src/
-│       ├── app/       Pages (route groups: (auth), (dashboard))
-│       ├── components/ UI components (layout, shared)
-│       ├── features/  Feature modules (one folder per business domain)
-│       ├── lib/       Firebase client/admin (lazy init), validations, utils
-│       ├── hooks/     Custom React hooks
-│       ├── providers/ React context providers
-│       ├── actions/   Next.js Server Actions
-│       └── types/     TypeScript type definitions
-├── backend/           Cloud Functions v2 — Express fat-lambda
-│   └── src/
-│       ├── app.ts     Express app factory
-│       ├── routes/    One file per resource
-│       ├── middleware/ auth (ID token → req.user), errorHandler (RFC 9457)
-│       └── lib/       firebase (Admin singleton), errors (HttpError), zodConverter
-├── firebase/          Firestore rules, indexes
-├── docs/              Guides and reference docs — start with GUIDE.md
-└── .claude/           Claude Code harness (agents, skills, MCP, hooks)
+```text
+http://localhost:3000
 ```
 
-## Commands
+## Available Commands
+
+Run commands from the repository root.
 
 ```bash
-pnpm run bootstrap        # First-time: install deps, env templates
-pnpm run dev              # Frontend dev server (talks to your real Firebase project)
-pnpm run build            # Build all packages
-pnpm run test             # Backend unit tests (mocked Firebase Admin)
-pnpm run test:component   # Frontend unit tests
-pnpm run test:all         # All tests
-pnpm run lint             # ESLint across all packages
-pnpm run format           # Prettier across all packages
-pnpm run typecheck        # TypeScript check across all packages
-pnpm run env:sync         # Regenerate frontend/backend env files from root .env
-pnpm run validate         # Check for unreplaced template placeholders
+pnpm run dev              # Start the frontend development server
+pnpm run build            # Build the frontend and backend
+pnpm run test             # Run backend tests
+pnpm run test:component   # Run frontend tests
+pnpm run test:all         # Run all tests
+pnpm run lint             # Run ESLint
+pnpm run format           # Format the project with Prettier
+pnpm run typecheck        # Run TypeScript checks
+pnpm run validate         # Check for unreplaced placeholders
 ```
+
+## Testing
+
+The project uses:
+
+- **Vitest** for unit testing
+- **Testing Library** for frontend component testing
+- **Supertest** for backend/API testing
+
+Run backend tests:
+
+```bash
+pnpm run test
+```
+
+Run frontend tests:
+
+```bash
+pnpm run test:component
+```
+
+Run all tests:
+
+```bash
+pnpm run test:all
+```
+
+Before submitting a pull request, make sure the relevant tests pass.
 
 ## Security
 
-Security is enforced in independent layers — Claude Code guard hooks, HTTP hardening (helmet/CORS/rate limits), token + session-cookie auth, Zod input validation, default-deny Firestore rules, and CI scanning (`pnpm audit`). See [docs/SECURITY.md](docs/SECURITY.md).
+Security is an important part of the project.
 
-### Known `pnpm audit` findings (manual fix)
+The application uses several security mechanisms, including:
 
+- Firebase Authentication
+- Server-side authentication checks
+- Session cookies
+- Firestore security rules
+- Zod input validation
+- HTTP security headers
+- CORS configuration
+- Rate limiting
+- Dependency vulnerability scanning
+- GitHub Actions CI checks
 
-`pnpm audit` currently flags two high-severity CVEs — both transitive, dev/build-time only, not runtime-reachable:
+Run the dependency security audit with:
 
-| Package | Issue | Pulled in by |
-|---------|-------|--------------|
-| `js-yaml` | CVE-2026-59870 — quadratic CPU DoS on `!!omap` resolution | eslint's dependency chain (lint-time only) |
-| `nanoid` | Infinite loop when a custom generator's `size` is 0 | postcss, used by Tailwind/Next/Vitest builds (build-time only) |
-
-To patch: add these two lines under `overrides:` in `pnpm-workspace.yaml`, then run `pnpm install`:
-
-```yaml
-  js-yaml: '^4.3.1'
-  nanoid: '^3.3.17'
+```bash
+pnpm audit
 ```
 
-Confirm with `pnpm audit` — should show 0 high/critical findings.
+The repository should have **no known vulnerabilities** before changes are merged.
 
 ## Git Workflow
 
+The project uses feature branches and pull requests.
+
 | Branch | Purpose |
-|--------|---------|
-| `main` | Production — protected, no direct pushes |
-| `feature/*` | New features → PR back to `main` |
-| `hotfix/*` | Urgent fixes → PR back to `main` |
+|---|---|
+| `main` | Stable project branch |
+| `feature/*` | New functionality |
+| `fix/*` | Bug fixes |
+| `hotfix/*` | Urgent fixes |
 
-Use the Claude Code skills `/git-feature`, `/git-hotfix`, `/git-release`. Details: [docs/GIT-WORKFLOW.md](docs/GIT-WORKFLOW.md).
+### Creating a Feature Branch
 
-## Claude Code Harness
+Start from the latest `main`:
 
-The repo ships a pre-configured harness: three MCP servers (**context7** for live library docs, **firebase** for Firestore/deploy tooling, **stitch** for design-to-code), three sub-agents (**security-reviewer**, **doc-auditor**, **test-writer**), enforcement hooks (blocks `any`, secret prefixes, direct pushes to `main`, unapproved deploys), and skills for scaffolding and quality:
+```bash
+git checkout main
+git pull origin main
+```
 
-| Category | Skills |
-|----------|--------|
-| Setup | `/bootstrap` — guided end-to-end local setup with verification |
-| Scaffolding | `/new-feature` · `/new-page` · `/new-component` · `/firebase-collection` · `/add-auth-provider` · `/add-route` · `/evolve-schema` · `/add-env-var` |
-| Quality | `/verify` · `/checkpoint` · `/save-session` · `/resume-session` |
-| Git | `/git-feature` · `/git-hotfix` · `/git-release` |
+Create a feature branch:
 
-See [CLAUDE.md](CLAUDE.md) for the full harness reference.
+```bash
+git checkout -b feature/<feature-name>
+```
+
+Example:
+
+```bash
+git checkout -b feature/client-management
+```
+
+### Commit Messages
+
+This repository uses **Conventional Commits**.
+
+Examples:
+
+```bash
+git commit -m "feat: add client management"
+git commit -m "fix: resolve authentication redirect"
+git commit -m "test: add client route tests"
+git commit -m "docs: update project setup instructions"
+git commit -m "chore: update dependencies"
+```
+
+Pull requests should be opened against `main`.
+
+## Pull Requests
+
+Before creating a pull request:
+
+1. Make sure your branch is up to date.
+2. Run the relevant tests.
+3. Run the build.
+4. Run the security audit.
+5. Make sure there are no unnecessary changes.
+6. Push your branch.
+7. Create a pull request against `main`.
+
+Recommended checks:
+
+```bash
+pnpm test
+pnpm test:component
+pnpm run build
+pnpm audit
+```
+
+### Security Checks and Pull Requests
+
+Pull requests may be blocked if the repository security checks detect high or critical dependency vulnerabilities.
+
+If this happens, check:
+
+```bash
+pnpm audit
+```
+
+Address the reported vulnerability before attempting to merge the pull request again.
+
+## Team Roles
+
+The project is being developed by a team working across different areas of the system.
+
+| Role | Responsibility |
+|---|---|
+| **Project Management** | Planning, coordination and project tracking |
+| **Business Analysis** | Requirements, business processes and stakeholder needs |
+| **Development** | Frontend, backend and database implementation |
+| **UX/UI** | User experience, interface design and usability |
+| **Testing** | Test planning, execution and defect reporting |
+
+See the project's requirements and documentation for the current team members and responsibilities.
 
 ## Documentation
 
-| Topic | Link |
-|-------|------|
-| **Beginner guide (start here)** | [docs/GUIDE.md](docs/GUIDE.md) |
-| Verified walkthrough (all steps + code) | [docs/TUTORIAL-WALKTHROUGH.md](docs/TUTORIAL-WALKTHROUGH.md) |
-| Copy-paste setup (no AI, exact steps) | [docs/COPY-PASTE-SETUP.md](docs/COPY-PASTE-SETUP.md) |
-| Copy-paste feature build (no AI, exact file paths) | [docs/COPY-PASTE-FEATURE.md](docs/COPY-PASTE-FEATURE.md) |
-| Slide deck — system overview + AI tooling | [docs/garage-boilerplate-guide.pptx](docs/garage-boilerplate-guide.pptx) |
-| Slide deck — the notes feature, step by step | [docs/notes-feature-tutorial.pptx](docs/notes-feature-tutorial.pptx) |
-| Architecture + diagrams | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| Frontend conventions | [docs/FRONTEND.md](docs/FRONTEND.md) |
-| Backend conventions | [docs/BACKEND.md](docs/BACKEND.md) |
-| Design system | [docs/DESIGN.md](docs/DESIGN.md) |
-| Firestore schema | [docs/FIRESTORE-SCHEMA.md](docs/FIRESTORE-SCHEMA.md) |
-| Environment variables | [docs/ENV-VARS.md](docs/ENV-VARS.md) |
-| Testing | [docs/TESTING.md](docs/TESTING.md) |
-| Security | [docs/SECURITY.md](docs/SECURITY.md) |
-| Git workflow | [docs/GIT-WORKFLOW.md](docs/GIT-WORKFLOW.md) |
-| CI/CD & deployment | [docs/CI-CD.md](docs/CI-CD.md) |
+Project documentation is maintained in the `docs/` directory.
+
+Important documentation includes:
+
+| Document | Description |
+|---|---|
+| `docs/ARCHITECTURE.md` | System architecture and technical design |
+| `docs/ENV-VARS.md` | Environment variable configuration |
+| `docs/TESTING.md` | Testing approach and test conventions |
+| `docs/SECURITY.md` | Security practices |
+| `docs/GIT-WORKFLOW.md` | Git and branch workflow |
+| `docs/CI-CD.md` | Continuous integration and deployment |
+
+Additional project documentation should be added to `docs/` as the system develops.
 
 ## Deployment
 
-The frontend deploys to **Vercel** (free Hobby tier, no billing account needed — this app is server-rendered, so it needs a server host, not static hosting). 
-Use this to depoy to Vercel - [DEPLOY-TO-VERCEL.md](DEPLOY-TO-VERCEL.md)
+The frontend is deployed using **Vercel**.
 
+The backend uses **Firebase Cloud Functions**.
 
+Deployment configuration should be maintained separately from local development configuration, and production credentials must never be committed to the repository.
 
-## Forking for a Client Project
+## Project Status
 
-Follow the checklist in [CLAUDE.md — Forking for a New Client Project](CLAUDE.md#forking-for-a-new-client-project), then run `pnpm run validate` to confirm no template placeholders remain.
+The system is currently under active development.
 
-## Credits
+Features and functionality will be added progressively according to the project's requirements, backlog and development plan.
 
-Original boilerplate by **Duc Gia Tin Huynh** ([LinkedIn](https://www.linkedin.com/in/huynhducgiatin/)).
+## Team
+
+**Food Systems Collective CRM Team**
+
+This repository contains the team's implementation of the Client & Partner Relationship Management System for the Food Systems Collective.
+
+---
+
+**Project:** Food Systems Collective — Client & Partner Relationship Management System
+**Repository:** FSC CRM
